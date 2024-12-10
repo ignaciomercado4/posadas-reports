@@ -21,11 +21,15 @@ func main() {
 	db := database.ConnectDatabase()
 	database.MigrateModels(db)
 
+	reportHandler := ReportHandler{DB: db}
+
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status": "alive",
 		})
 	})
+
+	r.GET("/createReport", reportHandler.CreateReport)
 
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
