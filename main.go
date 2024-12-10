@@ -1,6 +1,7 @@
 package main
 
 import (
+	"better-posadas/database"
 	"log"
 	"net/http"
 	"os"
@@ -15,18 +16,21 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	r := gin.Default()
+
+	db := database.ConnectDatabase()
+	database.MigrateModels(db)
+
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"status": "alive",
+		})
+	})
+
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
 		PORT = "8080"
 	}
-
-	r := gin.Default()
-
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"status": "alive",
-		})
-	})
 
 	r.Run(":" + string(PORT))
 }
