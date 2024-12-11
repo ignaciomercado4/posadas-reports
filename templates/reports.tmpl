@@ -95,18 +95,6 @@
                 `Latitude: ${lat.toFixed(6)}, Longitude: ${lng.toFixed(6)}`;
         });
 
-        {{if .reports}}
-            {{range .reports}}
-            L.marker([{{.PositionX}}, {{.PositionY}}])
-                .addTo(map)
-                .bindPopup(`
-                    <b>{{.Title}}</b><br>
-                    Category: {{.Category}}<br>
-                    Description: {{.Description}}
-                `);
-            {{end}}
-        {{end}}
-
         document.getElementById('newReportForm').addEventListener('submit', function(event) {
             event.preventDefault();
             
@@ -144,6 +132,45 @@
                 alert('Failed to create report');
             });
         });
+    </script>
+    <script>
+        const categoryColors = {
+            'Infrastructure': 'bg-red-500',
+            'Environment': 'bg-green-500',
+            'Public Safety': 'bg-blue-500',
+            'Transportation': 'bg-purple-500',
+            'Other': 'bg-yellow-500'
+        };
+    
+        function createMarkerIcon(category) {
+            const color = categoryColors[category] || 'bg-gray-500';
+            
+            return L.divIcon({
+                className: 'custom-div-icon',
+                html: `
+                    <div class="relative w-8 h-8 ${color} rounded-full border-2 border-white shadow-md">
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full"></div>
+                    </div>
+                `,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            });
+        }
+    
+        {{if .reports}}
+            {{range .reports}}
+            L.marker(
+                [{{.PositionX}}, {{.PositionY}}], 
+                {icon: createMarkerIcon('{{.Category}}')}
+            )
+            .addTo(map)
+            .bindPopup(`
+                <b>{{.Title}}</b><br>
+                Category: {{.Category}}<br>
+                Description: {{.Description}}
+            `);
+            {{end}}
+        {{end}}
     </script>
 </body>
 </html>
