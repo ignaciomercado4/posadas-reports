@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reports Map - Posadas, Misiones</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #map { 
+            height: 500px; 
+            width: 100%; 
+            margin-bottom: 20px;
+        }
+        .report-form {
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .report-form input, 
+        .report-form select, 
+        .report-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .report-form button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .coordinate-debug {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reports in Posadas, Misiones</h1>
+    
+    <div class="report-form">
+        <h2>Create New Report</h2>
+        <form id="newReportForm">
+            <input type="text" name="title" placeholder="Report Title" required>
+            
+            <select name="category" required>
+                <option value="">Select Category</option>
+                <option value="Infrastructure">Infrastructure</option>
+                <option value="Environment">Environment</option>
+                <option value="Public Safety">Public Safety</option>
+                <option value="Transportation">Transportation</option>
+                <option value="Other">Other</option>
+            </select>
+            
+            <textarea name="description" placeholder="Detailed Description" required rows="4"></textarea>
+            
+            <div class="coordinate-debug">
+                <strong>Coordinates:</strong> 
+                <span id="coordinateDisplay">Not set</span>
+            </div>
+            
+            <input type="hidden" id="positionX" name="positionX" required>
+            <input type="hidden" id="positionY" name="positionY" required>
+            
+            <p><strong>Click on the map to set location</strong></p>
+            <button type="submit">Submit Report</button>
+        </form>
+    </div>
+
+    <div id="map"></div>
+
+    <div>
+        <h2>Existing reports</h2>
+        {{range .reports}}
+            <p>{{.Title}} - {{.Description}} - PosX: {{.PositionX}} PosY: {{.PositionY}}</p>
+        {{end}}
+    </div>
+
+    <script>
+        const posadas = [-27.3621, -55.9045];
+        
+        const map = L.map('map').setView(posadas, 12);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        let newReportMarker = null;
+        map.on('click', function(e) {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+
+            if (newReportMarker) {
+                map.removeLayer(newReportMarker);
+            }
+
+            newReportMarker = L.marker([lat, lng]).addTo(map)
+                .bindPopup('New Report Location').openPopup();
+
+            document.getElementById('positionX').value = lat.toFixed(6);
+            document.getElementById('positionY').value = lng.toFixed(6);
+            
+            document.getElementById('coordinateDisplay').textContent = 
+                `Latitude: ${lat.toFixed(6)}, Longitude: ${lng.toFixed(6)}`;
+        });
+
+        {{if .reports}}
+            {{range .reports}}
+            L.marker([{{.PositionX}}, {{.PositionY}}])
+                .addTo(map)
+                .bindPopup(`
+                    <b>{{.Title}}</b><br>
+                    Category: {{.Category}}<br>
+                    Description: {{.Description}}
+                `);
+            {{end}}
+        {{end}}
+
+        document.getElementById('newReportForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const posX = document.getElementById('positionX').value;
+            const posY = document.getElementById('positionY').value;
+
+            if (!posX || !posY) {
+                alert('Please click on the map to set the report location');
+                return;
+            }
+
+            const formData = {
+                title: event.target.title.value,
+                category: event.target.category.value,
+                description: event.target.description.value,
+                positionX: parseFloat(posX),
+                positionY: parseFloat(posY)
+            };
+
+            fetch('/reports/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Report created successfully!');
+                location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Failed to create report');
+            });
+        });
+    </script>
+</body>
+</html>

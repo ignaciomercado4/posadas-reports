@@ -3,9 +3,9 @@ package main
 import (
 	"better-posadas/database"
 	"log"
-	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -18,18 +18,18 @@ func main() {
 
 	r := gin.Default()
 
+	r.Use(cors.Default())
+
 	db := database.ConnectDatabase()
 	database.MigrateModels(db)
 
 	reportHandler := ReportHandler{DB: db}
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status": "alive",
-		})
-	})
+	r.LoadHTMLGlob("templates/*")
 
-	r.GET("/createReport", reportHandler.CreateReport)
+	r.GET("/reports", reportHandler.GetReports)
+
+	r.POST("/reports/create", reportHandler.CreateReport)
 
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
