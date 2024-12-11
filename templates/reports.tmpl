@@ -4,59 +4,28 @@
     <meta charset="UTF-8">
     <title>Reports Map - Posadas, Misiones</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        #map { 
-            height: 500px; 
-            width: 100%; 
-            margin-bottom: 20px;
-        }
-        .report-form {
-            background-color: #f4f4f4;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .report-form input, 
-        .report-form select, 
-        .report-form textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .report-form button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .coordinate-debug {
-            background-color: #f0f0f0;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-        }
-    </style>
 </head>
-<body>
-    <h1>Reports in Posadas, Misiones</h1>
+<body class="font-sans max-w-screen-xl mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-4">{{.title}}</h1>
     
-    <div class="report-form">
-        <h2>Create New Report</h2>
-        <form id="newReportForm">
-            <input type="text" name="title" placeholder="Report Title" required>
+    <div class="bg-gray-100 p-5 rounded-lg shadow-md mb-6">
+        <h2 class="text-xl font-semibold mb-4">Create New Report</h2>
+        <form id="newReportForm" class="space-y-4">
+            <input 
+                type="text" 
+                name="title" 
+                placeholder="Report Title" 
+                required 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
             
-            <select name="category" required>
+            <select 
+                name="category" 
+                required 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
                 <option value="">Select Category</option>
                 <option value="Infrastructure">Infrastructure</option>
                 <option value="Environment">Environment</option>
@@ -65,29 +34,38 @@
                 <option value="Other">Other</option>
             </select>
             
-            <textarea name="description" placeholder="Detailed Description" required rows="4"></textarea>
+            <textarea 
+                name="description" 
+                placeholder="Detailed Description" 
+                required 
+                rows="4" 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            ></textarea>
             
-            <div class="coordinate-debug">
-                <strong>Coordinates:</strong> 
-                <span id="coordinateDisplay">Not set</span>
+            <div class="bg-gray-200 p-3 rounded-md mb-4">
+                <strong class="block mb-2">Coordinates:</strong> 
+                <span id="coordinateDisplay" class="text-sm">Not set</span>
             </div>
             
             <input type="hidden" id="positionX" name="positionX" required>
             <input type="hidden" id="positionY" name="positionY" required>
             
-            <p><strong>Click on the map to set location</strong></p>
-            <button type="submit">Submit Report</button>
+            <p class="text-sm text-gray-600 mb-4"><strong>Click on the map to set location</strong></p>
+            
+            <button 
+                type="submit" 
+                class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300 ease-in-out"
+            >
+                Submit Report
+            </button>
         </form>
     </div>
 
-    <div id="map"></div>
+    <div 
+        id="map" 
+        class="h-[500px] w-full bg-gray-100 rounded-lg shadow-md mb-6"
+    ></div>
 
-    <div>
-        <h2>Existing reports</h2>
-        {{range .reports}}
-            <p>{{.Title}} - {{.Description}} - PosX: {{.PositionX}} PosY: {{.PositionY}}</p>
-        {{end}}
-    </div>
 
     <script>
         const posadas = [-27.3621, -55.9045];

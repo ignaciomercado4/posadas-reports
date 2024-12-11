@@ -23,7 +23,7 @@ func (h *ReportHandler) GetReports(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "reports.tmpl", gin.H{
-		"title":   "Reports",
+		"title":   "Reports in Posadas",
 		"reports": existingReports,
 	})
 }
