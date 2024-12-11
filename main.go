@@ -28,8 +28,8 @@ func main() {
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/reports", reportHandler.GetReports)
-
 	r.POST("/reports/create", reportHandler.CreateReport)
+	r.GET("/reports/stats", reportHandler.GetReportStats)
 
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
