@@ -95,5 +95,8 @@ func (h *ReportHandler) GetReportStats(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, stats)
+	c.HTML(http.StatusOK, "stats.tmpl", gin.H{
+		"title": "Report statistics in Posadas",
+		"stats": stats,
+	})
 }

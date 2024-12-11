@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
+        <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">Report Category Statistics</h1>
+        
+        <div class="space-y-4">
+            {{range $category, $count := .stats.categoryAmounts}}
+            <div class="flex items-center bg-gray-50 rounded-md p-3 shadow-sm">
+                <span class="text-md capitalize flex-grow text-gray-700">
+                    {{$category}}
+                </span>
+                <span class="text-lg font-semibold 
+                    {{if eq $count 0}}text-gray-400
+                    {{else if le $count 2}}text-yellow-600
+                    {{else}}text-green-600{{end}}">
+                    {{$count}}
+                </span>
+            </div>
+            {{end}}
+        </div>
+
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-500">
+                Total Reports: 
+                <span class="font-bold">
+                    {{- $total := 0 -}}
+                    {{- range .stats.categoryAmounts -}}
+                        {{- $total = add $total . -}}
+                    {{- end -}}
+                    {{$total}}
+                </span>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

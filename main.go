@@ -2,8 +2,10 @@ package main
 
 import (
 	"better-posadas/database"
+	"html/template"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -25,6 +27,10 @@ func main() {
 
 	reportHandler := ReportHandler{DB: db}
 
+	r.SetFuncMap(template.FuncMap{
+		"replace": strings.ReplaceAll,
+		"add":     func(a, b int) int { return a + b },
+	})
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/reports", reportHandler.GetReports)
