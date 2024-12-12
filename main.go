@@ -31,6 +31,9 @@ func main() {
 		"replace": strings.ReplaceAll,
 		"add":     func(a, b int) int { return a + b },
 	})
+
+	r.StaticFile("/utils.js", "./utils/utils.js")
+
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/reports", reportHandler.GetReports)
