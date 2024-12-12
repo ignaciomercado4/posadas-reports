@@ -7,65 +7,95 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
 </head>
-<body class="font-sans max-w-screen-xl mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-4">{{.title}}</h1>
-    
-    <div class="bg-gray-100 p-5 rounded-lg shadow-md mb-6">
-        <h2 class="text-xl font-semibold mb-4">Create New Report</h2>
-        <form id="newReportForm" class="space-y-4">
-            <input 
-                type="text" 
-                name="title" 
-                placeholder="Report Title" 
-                required 
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-            
-            <select 
-                name="category" 
-                required 
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-                <option value="">Select Category</option>
-                <option value="Infrastructure">Infrastructure</option>
-                <option value="Environment">Environment</option>
-                <option value="Public Safety">Public Safety</option>
-                <option value="Transportation">Transportation</option>
-                <option value="Other">Other</option>
-            </select>
-            
-            <textarea 
-                name="description" 
-                placeholder="Detailed Description" 
-                required 
-                rows="4" 
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            ></textarea>
-            
-            <div class="bg-gray-200 p-3 rounded-md mb-4">
-                <strong class="block mb-2">Coordinates:</strong> 
-                <span id="coordinateDisplay" class="text-sm">Not set</span>
+<body class="m-0 p-0 h-screen overflow-hidden flex flex-col">
+    <nav class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 flex items-center justify-between shadow-lg z-50">
+        <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <h1 class="text-2xl font-bold tracking-wider">Posadas Reports</h1>
             </div>
-            
-            <input type="hidden" id="positionX" name="positionX" required>
-            <input type="hidden" id="positionY" name="positionY" required>
-            
-            <p class="text-sm text-gray-600 mb-4"><strong>Click on the map to set location</strong></p>
-            
-            <button 
-                type="submit" 
-                class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300 ease-in-out"
-            >
-                Submit Report
+        </div>
+        
+        <div class="flex items-center space-x-4">
+            <button id="addReportBtn" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-md flex items-center transition duration-300 ease-in-out transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+                Create Report
             </button>
-        </form>
+        </div>
+    </nav>
+
+    <div id="map" class="flex-grow z-10"></div>
+
+    <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+            <button id="closeModal" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <h2 class="text-2xl font-bold mb-6 text-center">Create New Report</h2>
+            
+            <form id="newReportForm" class="space-y-4">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-bold mb-2" for="address">
+                        Location Address
+                    </label>
+                    <input 
+                        type="text" 
+                        id="address" 
+                        name="address" 
+                        readonly 
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+                    >
+                </div>
+                
+                <input 
+                    type="text" 
+                    name="title" 
+                    placeholder="Report Title" 
+                    required 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                
+                <select 
+                    name="category" 
+                    required 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="">Select Category</option>
+                    <option value="Infrastructure">Infrastructure</option>
+                    <option value="Environment">Environment</option>
+                    <option value="Public Safety">Public Safety</option>
+                    <option value="Transportation">Transportation</option>
+                    <option value="Other">Other</option>
+                </select>
+                
+                <textarea 
+                    name="description" 
+                    placeholder="Detailed Description" 
+                    required 
+                    rows="4" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                ></textarea>
+                
+                <input type="hidden" id="positionX" name="positionX" required>
+                <input type="hidden" id="positionY" name="positionY" required>
+                
+                <button 
+                    type="submit" 
+                    class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300 ease-in-out"
+                >
+                    Submit Report
+                </button>
+            </form>
+        </div>
     </div>
-
-    <div 
-        id="map" 
-        class="h-[500px] w-full bg-gray-100 rounded-lg shadow-md mb-6"
-    ></div>
-
 
     <script>
         const posadas = [-27.3621, -55.9045];
@@ -76,7 +106,94 @@
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
+        const categoryColors = {
+            'Infrastructure': 'bg-red-500',
+            'Environment': 'bg-green-500',
+            'Public Safety': 'bg-blue-500',
+            'Transportation': 'bg-purple-500',
+            'Other': 'bg-yellow-500'
+        };
+
+        function createMarkerIcon(category) {
+            const color = categoryColors[category] || 'bg-gray-500';
+            
+            return L.divIcon({
+                className: 'custom-div-icon',
+                html: `
+                    <div class="relative w-8 h-8 ${color} rounded-full border-2 border-white shadow-md">
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full"></div>
+                    </div>
+                `,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            });
+        }
+
+        {{if .reports}}
+            {{range .reports}}
+            L.marker(
+                [{{.PositionX}}, {{.PositionY}}], 
+                {icon: createMarkerIcon('{{.Category}}')}
+            )
+            .addTo(map)
+            .bindPopup(`
+                <b>{{.Title}}</b><br>
+                Category: {{.Category}}<br>
+                Description: {{.Description}}
+            `);
+            {{end}}
+        {{end}}
+
+        const reportModal = document.getElementById('reportModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const addReportBtn = document.getElementById('addReportBtn');
+        const addressInput = document.getElementById('address');
         let newReportMarker = null;
+
+        function fetchAddress(lat, lng) {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    let address = '';
+                    if (data.address) {
+                        const details = data.address;
+                        address = [
+                            details.road || '',
+                            details.house_number || '',
+                            details.city || details.town || details.village || '',
+                            details.state || '',
+                            details.postcode || ''
+                        ].filter(Boolean).join(', ');
+                    }
+                    
+                    addressInput.value = address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching address:', error);
+                    addressInput.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                });
+        }
+
+        addReportBtn.addEventListener('click', function() {
+            const center = map.getCenter();
+            
+            if (newReportMarker) {
+                map.removeLayer(newReportMarker);
+            }
+
+            newReportMarker = L.marker(center).addTo(map);
+
+            fetchAddress(center.lat, center.lng);
+
+            document.getElementById('positionX').value = center.lat.toFixed(6);
+            document.getElementById('positionY').value = center.lng.toFixed(6);
+
+            reportModal.classList.remove('hidden');
+            reportModal.classList.add('flex');
+        });
+
         map.on('click', function(e) {
             const lat = e.latlng.lat;
             const lng = e.latlng.lng;
@@ -85,14 +202,25 @@
                 map.removeLayer(newReportMarker);
             }
 
-            newReportMarker = L.marker([lat, lng]).addTo(map)
-                .bindPopup('New Report Location').openPopup();
+            newReportMarker = L.marker([lat, lng]).addTo(map);
+
+            fetchAddress(lat, lng);
 
             document.getElementById('positionX').value = lat.toFixed(6);
             document.getElementById('positionY').value = lng.toFixed(6);
-            
-            document.getElementById('coordinateDisplay').textContent = 
-                `Latitude: ${lat.toFixed(6)}, Longitude: ${lng.toFixed(6)}`;
+
+            reportModal.classList.remove('hidden');
+            reportModal.classList.add('flex');
+        });
+
+        closeModalBtn.addEventListener('click', function() {
+            if (newReportMarker) {
+                map.removeLayer(newReportMarker);
+                newReportMarker = null;
+            }
+
+            reportModal.classList.remove('flex');
+            reportModal.classList.add('hidden');
         });
 
         document.getElementById('newReportForm').addEventListener('submit', function(event) {
@@ -101,15 +229,11 @@
             const posX = document.getElementById('positionX').value;
             const posY = document.getElementById('positionY').value;
 
-            if (!posX || !posY) {
-                alert('Please click on the map to set the report location');
-                return;
-            }
-
             const formData = {
                 title: event.target.title.value,
                 category: event.target.category.value,
                 description: event.target.description.value,
+                address: event.target.address.value,
                 positionX: parseFloat(posX),
                 positionY: parseFloat(posY)
             };
@@ -132,45 +256,6 @@
                 alert('Failed to create report');
             });
         });
-    </script>
-    <script>
-        const categoryColors = {
-            'Infrastructure': 'bg-red-500',
-            'Environment': 'bg-green-500',
-            'Public Safety': 'bg-blue-500',
-            'Transportation': 'bg-purple-500',
-            'Other': 'bg-yellow-500'
-        };
-    
-        function createMarkerIcon(category) {
-            const color = categoryColors[category] || 'bg-gray-500';
-            
-            return L.divIcon({
-                className: 'custom-div-icon',
-                html: `
-                    <div class="relative w-8 h-8 ${color} rounded-full border-2 border-white shadow-md">
-                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full"></div>
-                    </div>
-                `,
-                iconSize: [32, 32],
-                iconAnchor: [16, 16]
-            });
-        }
-    
-        {{if .reports}}
-            {{range .reports}}
-            L.marker(
-                [{{.PositionX}}, {{.PositionY}}], 
-                {icon: createMarkerIcon('{{.Category}}')}
-            )
-            .addTo(map)
-            .bindPopup(`
-                <b>{{.Title}}</b><br>
-                Category: {{.Category}}<br>
-                Description: {{.Description}}
-            `);
-            {{end}}
-        {{end}}
     </script>
 </body>
 </html>
