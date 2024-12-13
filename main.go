@@ -32,7 +32,7 @@ func main() {
 		"add":     func(a, b int) int { return a + b },
 	})
 
-	r.StaticFile("/utils.js", "./utils/utils.js")
+	r.StaticFile("/reportsUi.js", "./utils/reportsUi.js")
 
 	r.LoadHTMLGlob("templates/*")
 
@@ -45,5 +45,5 @@ func main() {
 		PORT = "8080"
 	}
 
-	r.Run(":" + string(PORT))
+	r.Run(":" + PORT)
 }
