@@ -33,6 +33,7 @@ func main() {
 	})
 
 	r.StaticFile("/reportsUi.js", "./utils/reportsUi.js")
+	r.StaticFile("/mapSearchBar.js", "./utils/mapSearchBar.js")
 
 	r.LoadHTMLGlob("templates/*")
 
