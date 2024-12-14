@@ -5,39 +5,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ .title }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-        <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">Report Category Statistics</h1>
+<body class="bg-gray-100 min-h-screen p-4">
+    <div class="container mx-auto max-w-4xl space-y-6">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Comprehensive Report Statistics</h1>
         
-        <div class="space-y-4">
-            {{range $category, $count := .stats.categoryAmounts}}
-            <div class="flex items-center bg-gray-50 rounded-md p-3 shadow-sm">
-                <span class="text-md capitalize flex-grow text-gray-700">
-                    {{$category}}
-                </span>
-                <span class="text-lg font-semibold 
-                    {{if eq $count 0}}text-gray-400
-                    {{else if le $count 2}}text-yellow-600
-                    {{else}}text-green-600{{end}}">
-                    {{$count}}
-                </span>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700">Report Categories</h2>
+                <div class="space-y-4">
+                    {{range $category, $count := .stats.categoryAmounts}}
+                    <div class="flex items-center bg-gray-50 rounded-md p-3 shadow-sm">
+                        <span class="text-md capitalize flex-grow text-gray-700 mr-2">
+                            {{$category}}
+                        </span>
+                        <div class="flex items-center">
+                            <span class="text-lg font-semibold mr-2 
+                                {{if eq $count 0}}text-gray-400
+                                {{else if le $count 2}}text-yellow-600
+                                {{else}}text-green-600{{end}}">
+                                {{$count}}
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                ({{index $.stats.categoryPercentages $category}}%)
+                            </span>
+                            <span class="ml-2 w-4 h-4 rounded-full 
+                                {{- if eq $category "infrastructure"}}bg-red-500
+                                {{- else if eq $category "environment"}}bg-green-500
+                                {{- else if eq $category "public safety"}}bg-blue-500
+                                {{- else if eq $category "transportation"}}bg-purple-500
+                                {{- else}}bg-yellow-500{{end}}"></span>
+                        </div>
+                    </div>
+                    {{end}}
+                </div>
+                <canvas id="categoryChart" class="mt-4 w-full h-48"></canvas>
             </div>
-            {{end}}
+
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700">Recent Reports</h2>
+                <div class="space-y-4">
+                    {{range $period, $count := .stats.recentStats}}
+                    <div class="flex items-center bg-gray-50 rounded-md p-3 shadow-sm">
+                        <span class="text-md flex-grow text-gray-700">
+                            {{if eq $period "last24Hours"}}
+                                Last 24 hours
+                            {{end}}
+
+                            {{if eq $period "last7Days"}}
+                                Last 7 days
+                            {{end}}
+
+                            {{if eq $period "last30Days"}}
+                                Last 30 days
+                            {{end}}
+                        </span>
+                        <span class="text-lg font-semibold 
+                            {{if eq $count 0}}text-gray-400
+                                {{else if le $count 2}}text-yellow-600
+                                {{else}}text-green-600
+                            {{end}}">
+                            {{$count}}
+                        </span>
+                    </div>
+                    {{end}}
+                </div>
+            </div>
         </div>
 
-        <div class="mt-6 text-center">
-            <p class="text-sm text-gray-500">
+        <div class="bg-white shadow-lg rounded-lg p-4 text-center">
+            <p class="text-lg text-gray-700">
                 Total Reports: 
-                <span class="font-bold">
-                    {{- $total := 0 -}}
-                    {{- range .stats.categoryAmounts -}}
-                        {{- $total = add $total . -}}
-                    {{- end -}}
-                    {{$total}}
+                <span class="font-bold text-blue-600">
+                    {{.stats.totalReports}}
                 </span>
             </p>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [
+                    {{range $category, $count := .stats.categoryAmounts}}"{{$category}}",{{end}}
+                ],
+                datasets: [{
+                    data: [
+                        {{range .stats.categoryAmounts}}{{.}},{{end}}
+                    ],
+                    backgroundColor: [
+                        '#EF4444',  
+                        '#10B981',  
+                        '#3B82F6',  
+                        '#8B5CF6',  
+                        '#F59E0B'   
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+    });
+    </script>
 </body>
 </html>
