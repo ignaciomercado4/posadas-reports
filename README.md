@@ -4,4 +4,4 @@ Posadas Reports is an app developed to assist the people of Posadas City in repo
 The app also provides stats about frequent report categories and recent report amounts.
 
 ---
-Made using Go, Gin, Gorm, SQLite and TailwindCSS
+Made using Go, Gin, Gorm, PostgreSQL and TailwindCSS
