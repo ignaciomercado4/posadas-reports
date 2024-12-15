@@ -95,37 +95,53 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('categoryChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: [
-                    {{range $category, $count := .stats.categoryAmounts}}"{{$category}}",{{end}}
-                ],
-                datasets: [{
-                    data: [
-                        {{range .stats.categoryAmounts}}{{.}},{{end}}
-                    ],
-                    backgroundColor: [
-                        '#EF4444',  
-                        '#10B981',  
-                        '#3B82F6',  
-                        '#8B5CF6',  
-                        '#F59E0B'   
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryColors = {
+                'infrastructure': '#EF4444',
+                'environment': '#10B981',
+                'public safety': '#3B82F6',
+                'transportation': '#8B5CF6',
+                'garbage disposal': '#EB650C',
+                'road marking/signaling': '#99F21D',
+                'vandalism': '#F21D99',
+                'other': '#F59E0B'
+            };
+        
+            const categories = [
+                {{range $category, $count := .stats.categoryAmounts}}"{{$category}}",{{end}}
+            ];
+        
+            const categoryData = [
+                {{range .stats.categoryAmounts}}{{.}},{{end}}
+            ];
+        
+            const backgroundColors = categories.map(category => {
+                const color = categoryColors[category] || '#D1D5DB';
+
+                return color;
+            });
+        
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        data: categoryData,
+                        backgroundColor: backgroundColors,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
                     }
                 }
-            }
+            });
         });
-    });
     </script>
+        
 </body>
 </html>

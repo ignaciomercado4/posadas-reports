@@ -109,11 +109,14 @@ func (h *ReportHandler) compileReportStatistics(reports []models.Report) gin.H {
 func (h *ReportHandler) calculateCategoryAmounts(reports []models.Report) gin.H {
 
 	categoryAmounts := gin.H{
-		"infrastructure": 0,
-		"environment":    0,
-		"public safety":  0,
-		"transportation": 0,
-		"other":          0,
+		"infrastructure":         0,
+		"environment":            0,
+		"public safety":          0,
+		"transportation":         0,
+		"garbage disposal":       0,
+		"road marking/signaling": 0,
+		"vandalism":              0,
+		"other":                  0,
 	}
 
 	for _, report := range reports {

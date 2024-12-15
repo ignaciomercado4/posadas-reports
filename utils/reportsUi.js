@@ -11,6 +11,9 @@ const categoryColors = {
     'Environment': 'bg-green-500',
     'Public Safety': 'bg-blue-500',
     'Transportation': 'bg-purple-500',
+    'Garbage Disposal': 'bg-orange-700',
+    'Road Marking/Signaling': 'bg-lime-500',
+    'Vandalism': 'bg-fuchsia-500',
     'Other': 'bg-yellow-500'
 };
 
@@ -28,6 +31,7 @@ function createMarkerIcon(category) {
         iconAnchor: [16, 16]
     });
 }
+
 
 const reportModal = document.getElementById('reportModal');
 const closeModalBtn = document.getElementById('closeModal');
