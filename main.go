@@ -2,6 +2,7 @@ package main
 
 import (
 	"better-posadas/database"
+	"better-posadas/handlers"
 	"html/template"
 	"log"
 	"os"
@@ -25,15 +26,15 @@ func main() {
 	db := database.ConnectDatabase()
 	database.MigrateModels(db)
 
-	reportHandler := ReportHandler{DB: db}
+	reportHandler := handlers.ReportHandler{DB: db}
 
 	r.SetFuncMap(template.FuncMap{
 		"replace": strings.ReplaceAll,
 		"add":     func(a, b int) int { return a + b },
 	})
 
-	r.StaticFile("/reportsUi.js", "./utils/reportsUi.js")
-	r.StaticFile("/mapSearchBar.js", "./utils/mapSearchBar.js")
+	r.StaticFile("/reportsUi.js", "./public/reportsUi.js")
+	r.StaticFile("/mapSearchBar.js", "./public/mapSearchBar.js")
 
 	r.LoadHTMLGlob("templates/*")
 
@@ -46,5 +47,6 @@ func main() {
 		PORT = "8080"
 	}
 
+	log.Println("Server is running on port " + PORT)
 	r.Run(":" + PORT)
 }
