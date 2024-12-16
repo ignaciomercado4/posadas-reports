@@ -123,6 +123,7 @@ document.getElementById('newReportForm').addEventListener('submit', function(eve
         category: event.target.category.value,
         description: event.target.description.value,
         address: event.target.address.value,
+        urgency: event.target.urgency.value,
         positionX: parseFloat(posX),
         positionY: parseFloat(posY)
     };
