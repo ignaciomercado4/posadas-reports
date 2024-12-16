@@ -77,7 +77,7 @@ func (h *ReportHandler) GetReportStats(c *gin.Context) {
 	stats := h.compileReportStatistics(existingReports)
 
 	c.HTML(http.StatusOK, "stats.tmpl", gin.H{
-		"title": "Comprehensive Report Statistics in Posadas",
+		"title": "Report Statistics in Posadas",
 		"stats": stats,
 	})
 }
@@ -94,6 +94,7 @@ func (h *ReportHandler) fetchReports() ([]models.Report, error) {
 func (h *ReportHandler) compileReportStatistics(reports []models.Report) gin.H {
 	stats := gin.H{
 		"categoryAmounts":     h.calculateCategoryAmounts(reports),
+		"urgencyAmounts":      h.calculateUrgencyAmounts(reports),
 		"totalReports":        len(reports),
 		"recentStats":         h.calculateRecentReportStats(reports),
 		"categoryPercentages": make(gin.H),
@@ -159,6 +160,36 @@ func (h *ReportHandler) calculateRecentReportStats(reports []models.Report) gin.
 	}
 
 	return recentStats
+}
+
+func (h *ReportHandler) calculateUrgencyAmounts(reports []models.Report) gin.H {
+	urgencyAmounts := gin.H{
+		"none":     0,
+		"low":      0,
+		"medium":   0,
+		"high":     0,
+		"critical": 0,
+	}
+
+	for _, report := range reports {
+		if report.Urgency == "None" {
+			urgencyAmounts["none"] = urgencyAmounts["none"].(int) + 1
+		}
+		if report.Urgency == "low" {
+			urgencyAmounts["low"] = urgencyAmounts["lone"].(int) + 1
+		}
+		if report.Urgency == "medium" {
+			urgencyAmounts["medium"] = urgencyAmounts["medium"].(int) + 1
+		}
+		if report.Urgency == "high" {
+			urgencyAmounts["high"] = urgencyAmounts["high"].(int) + 1
+		}
+		if report.Urgency == "critical" {
+			urgencyAmounts["high"] = urgencyAmounts["high"].(int) + 1
+		}
+	}
+
+	return urgencyAmounts
 }
 
 func (h *ReportHandler) calculateCategoryPercentages(
