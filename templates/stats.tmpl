@@ -7,90 +7,103 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-100 min-h-screen p-4">
-    <nav class="container mx-auto max-w-4xl mb-6">
-        <div class="flex flex-wrap justify-between items-center space-y-2 sm:space-y-0">
-            <a href="/reports" class="text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out">
+<body class="bg-gray-50 min-h-screen p-4">
+    <div class="container mx-auto max-w-6xl space-y-6">
+        <nav class="mb-6">
+            <a href="/reports" class="text-blue-600 hover:text-blue-800 transition duration-300">
                 ← Go Back to Reports
             </a>
-        </div>
-    </nav>
+        </nav>
 
-    <div class="container mx-auto max-w-4xl space-y-6">
-        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Comprehensive Report Statistics</h1>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white shadow-lg rounded-lg p-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">Report Categories</h2>
-                <div class="space-y-4">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">Report Statistics</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-4 hover:shadow-md transition-all">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-700">Amount of Reports by <span class="text-green-700">Category</span></h2>
                     {{range $category, $count := .stats.categoryAmounts}}
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center bg-gray-50 rounded-md p-3 shadow-sm space-y-2 sm:space-y-0">
-                        <div class="flex items-center w-full">
-                            <span class="text-md capitalize flex-grow text-gray-700 mr-2">
-                                {{$category}}
+                    <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-4 h-4 rounded-full 
+                                {{- if eq $category "infrastructure"}}bg-red-500
+                                {{- else if eq $category "environment"}}bg-green-500
+                                {{- else if eq $category "public safety"}}bg-blue-500
+                                {{- else if eq $category "transportation"}}bg-purple-500
+                                {{- else}}bg-yellow-500{{end}}"></span>
+                            <span class="text-md capitalize text-gray-700">{{$category}}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg font-semibold 
+                                {{if eq $count 0}}text-gray-400
+                                {{else if le $count 2}}text-yellow-600
+                                {{else}}text-green-600{{end}}">
+                                {{$count}}
                             </span>
-                            <div class="flex items-center">
-                                <span class="text-lg font-semibold mr-2 
-                                    {{if eq $count 0}}text-gray-400
-                                    {{else if le $count 2}}text-yellow-600
-                                    {{else}}text-green-600{{end}}">
-                                    {{$count}}
-                                </span>
-                                <span class="text-sm text-gray-500">
-                                    ({{index $.stats.categoryPercentages $category}}%)
-                                </span>
-                                <span class="ml-2 w-4 h-4 rounded-full 
-                                    {{- if eq $category "infrastructure"}}bg-red-500
-                                    {{- else if eq $category "environment"}}bg-green-500
-                                    {{- else if eq $category "public safety"}}bg-blue-500
-                                    {{- else if eq $category "transportation"}}bg-purple-500
-                                    {{- else}}bg-yellow-500{{end}}"></span>
-                            </div>
+                            <span class="text-sm text-gray-500">
+                                ({{index $.stats.categoryPercentages $category}}%)
+                            </span>
                         </div>
                     </div>
                     {{end}}
                 </div>
-                <canvas id="categoryChart" class="mt-4 w-full h-48"></canvas>
-            </div>
 
-            <div class="bg-white shadow-lg rounded-lg p-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">Recent Reports</h2>
-                <div class="space-y-4">
+                <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-4 hover:shadow-md transition-all">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-700">Recent Reports</h2>
                     {{range $period, $count := .stats.recentStats}}
-                    <div class="flex items-center bg-gray-50 rounded-md p-3 shadow-sm">
-                        <span class="text-md flex-grow text-gray-700">
-                            {{if eq $period "last24Hours"}}
-                                Last 24 hours
-                            {{end}}
-
-                            {{if eq $period "last7Days"}}
-                                Last 7 days
-                            {{end}}
-
-                            {{if eq $period "last30Days"}}
-                                Last 30 days
-                            {{end}}
+                    <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                        <span class="text-md text-gray-700">
+                            {{if eq $period "last24Hours"}}Last 24 hours{{end}}
+                            {{if eq $period "last7Days"}}Last 7 days{{end}}
+                            {{if eq $period "last30Days"}}Last 30 days{{end}}
                         </span>
                         <span class="text-lg font-semibold 
                             {{if eq $count 0}}text-gray-400
-                                {{else if le $count 2}}text-yellow-600
-                                {{else}}text-green-600
-                            {{end}}">
+                            {{else if le $count 2}}text-yellow-600
+                            {{else}}text-green-600{{end}}">
                             {{$count}}
                         </span>
                     </div>
                     {{end}}
                 </div>
             </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-4 hover:shadow-md transition-all">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700">Amount of Reports by <span class="text-red-700">Urgency</span></h2>
+                {{range $urgency, $count := .stats.urgencyAmounts}}
+                <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                    <span class="text-md text-gray-700">
+                        {{if eq $urgency "critical"}}Critical{{end}}
+                        {{if eq $urgency "high"}}High{{end}}
+                        {{if eq $urgency "medium"}}Medium{{end}}
+                        {{if eq $urgency "low"}}Low{{end}}
+                        {{if eq $urgency "none"}}None{{end}}
+                    </span>
+                    <span class="text-lg font-semibold 
+                        {{if eq $count 0}}text-gray-400
+                        {{else if le $count 2}}text-yellow-600
+                        {{else}}text-green-600{{end}}">
+                        {{$count}}
+                    </span>
+                </div>
+                {{end}}
+            </div>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg p-4 text-center">
-            <p class="text-lg text-gray-700">
-                Total Reports: 
-                <span class="font-bold text-blue-600">
-                    {{.stats.totalReports}}
-                </span>
-            </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 hover:shadow-md transition-all">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700">Category Distribution</h2>
+                <canvas id="categoryChart" class="w-full h-64"></canvas>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 flex items-center justify-center hover:shadow-md transition-all">
+                <p class="text-xl text-gray-700">
+                    There are a total of
+                    <span class="font-bold text-blue-600">
+                        {{.stats.totalReports}}
+                    </span>
+                    reports.
+                </p>
+            </div>
         </div>
     </div>
 
@@ -117,7 +130,6 @@
         
             const backgroundColors = categories.map(category => {
                 const color = categoryColors[category] || '#D1D5DB';
-
                 return color;
             });
         
@@ -142,6 +154,5 @@
             });
         });
     </script>
-        
 </body>
 </html>

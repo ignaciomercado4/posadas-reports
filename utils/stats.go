@@ -44,16 +44,16 @@ func CalculateUrgencyAmounts(reports []models.Report) map[string]int {
 		if report.Urgency == "None" {
 			urgencyAmounts["none"]++
 		}
-		if report.Urgency == "low" {
+		if report.Urgency == "Low" {
 			urgencyAmounts["low"]++
 		}
-		if report.Urgency == "medium" {
+		if report.Urgency == "Medium" {
 			urgencyAmounts["medium"]++
 		}
-		if report.Urgency == "high" {
+		if report.Urgency == "High" {
 			urgencyAmounts["high"]++
 		}
-		if report.Urgency == "critical" {
+		if report.Urgency == "Critical" {
 			urgencyAmounts["critical"]++
 		}
 	}
