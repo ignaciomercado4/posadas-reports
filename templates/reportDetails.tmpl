@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen p-4">
+    <div class="container mx-auto max-w-4xl">
+        <nav class="mb-6">
+            <a href="/reports" class="text-blue-600 hover:text-blue-800 transition duration-300 flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Reports
+            </a>
+        </nav>
+
+        <div class="bg-white shadow-lg rounded-xl overflow-hidden">
+            <div class="p-6 bg-gray-100 border-b border-gray-200">
+                <h1 class="text-2xl font-bold text-gray-800">{{ .report.Title }}</h1>
+            </div>
+
+            <div class="p-6 space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-700 mb-2">Basic Information</h2>
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <span class="text-gray-500 text-sm block">Category</span>
+                                <span class="text-gray-800 font-medium capitalize">
+                                    {{ .report.Category }}
+                                </span>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <span class="text-gray-500 text-sm block">Urgency</span>
+                                <span class="
+                                    font-medium 
+                                    {{if eq .report.Urgency "low"}}text-green-600
+                                    {{else if eq .report.Urgency "medium"}}text-yellow-600
+                                    {{else}}text-red-600{{end}}
+                                ">
+                                    {{ .report.Urgency }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-700 mb-2">Location</h2>
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <span class="text-gray-500 text-sm block">Coordinates</span>
+                                <span class="text-gray-800 font-medium">
+                                    X: {{ .report.PositionX }}, Y: {{ .report.PositionY }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2">Description</h2>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-gray-800">
+                            {{ .report.Description }}
+                        </p>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2">Additional Details</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <span class="text-gray-500 text-sm block">Created At</span>
+                            <span class="text-gray-800 font-medium">
+                                {{ .report.CreatedAt.Format "2006-01-02 15:04:05" }}
+                            </span>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <span class="text-gray-500 text-sm block">Last Updated</span>
+                            <span class="text-gray-800 font-medium">
+                                {{ .report.UpdatedAt.Format "2006-01-02 15:04:05" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

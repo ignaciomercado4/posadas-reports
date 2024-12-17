@@ -62,6 +62,23 @@ func (h *ReportHandler) CreateReport(c *gin.Context) {
 	})
 }
 
+func (h *ReportHandler) GetReportDetail(c *gin.Context) {
+	var report models.Report
+	reportId := c.Param("id")
+
+	h.DB.Where("ID=?", reportId).Find(&report)
+
+	if report.ID == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to get report details",
+		})
+	}
+
+	c.HTML(http.StatusOK, "reportDetails.tmpl", gin.H{
+		"report": report,
+	})
+}
+
 func (h *ReportHandler) GetReportStats(c *gin.Context) {
 	existingReports, err := h.fetchReports()
 	if err != nil {

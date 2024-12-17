@@ -39,6 +39,7 @@ func main() {
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/reports", reportHandler.GetReports)
+	r.GET("/reports/:id", reportHandler.GetReportDetail)
 	r.POST("/reports/create", reportHandler.CreateReport)
 	r.GET("/reports/stats", reportHandler.GetReportStats)
 

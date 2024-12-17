@@ -138,11 +138,9 @@ document.getElementById('newReportForm').addEventListener('submit', function(eve
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
-        alert('Report created successfully!');
         location.reload();
     })
     .catch((error) => {
         console.error('Error:', error);
-        alert('Failed to create report');
     });
 });
