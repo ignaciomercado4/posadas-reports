@@ -44,6 +44,7 @@ func (h *ReportHandler) CreateReport(c *gin.Context) {
 		Title:       reportInput.Title,
 		Description: reportInput.Description,
 		Urgency:     reportInput.Urgency,
+		Address:     reportInput.Address,
 		PositionX:   reportInput.PositionX,
 		PositionY:   reportInput.PositionY,
 	}

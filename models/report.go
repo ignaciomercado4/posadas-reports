@@ -8,6 +8,7 @@ type Report struct {
 	Title       string  `json:"title" gorm:"not null"`
 	Description string  `json:"description" gorm:"not null"`
 	Urgency     string  `json:"urgency" gorm:"not null"`
+	Address     string  `json:"address" gorm:"not null"`
 	PositionX   float64 `json:"positionX" gorm:"not null"`
 	PositionY   float64 `json:"positionY" gorm:"not null"`
 }

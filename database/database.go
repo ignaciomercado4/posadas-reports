@@ -31,13 +31,11 @@ func ConnectDatabase() *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	// Print a success message if connection is successful
 	fmt.Println("successful database connection")
 	return db
 }
 
 func MigrateModels(db *gorm.DB) {
-	// Automatically migrate the models to create the necessary tables
 	db.AutoMigrate(&models.Report{})
 	fmt.Println("models migrated")
 }
