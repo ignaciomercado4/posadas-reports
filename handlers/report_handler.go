@@ -13,6 +13,21 @@ type ReportHandler struct {
 	DB *gorm.DB
 }
 
+func (h *ReportHandler) GetHome(c *gin.Context) {
+	reports, err := h.fetchReports()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	c.HTML(http.StatusOK, "home.tmpl", gin.H{
+		"reportsAmount": len(reports),
+	})
+}
+
 func (h *ReportHandler) GetReports(c *gin.Context) {
 	var existingReports []models.Report
 	result := h.DB.Find(&existingReports)
@@ -101,6 +116,7 @@ func (h *ReportHandler) fetchReports() ([]models.Report, error) {
 	if result.Error != nil {
 		return nil, result.Error
 	}
+
 	return existingReports, nil
 }
 

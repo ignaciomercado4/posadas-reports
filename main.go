@@ -35,9 +35,9 @@ func main() {
 
 	r.StaticFile("/reportsUi.js", "./public/reportsUi.js")
 	r.StaticFile("/mapSearchBar.js", "./public/mapSearchBar.js")
-
 	r.LoadHTMLGlob("templates/*")
 
+	r.GET("/", reportHandler.GetHome)
 	r.GET("/reports", reportHandler.GetReports)
 	r.GET("/reports/:id", reportHandler.GetReportDetail)
 	r.POST("/reports/create", reportHandler.CreateReport)
