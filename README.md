@@ -7,6 +7,14 @@ Posadas Reports is an application designed to help residents of Posadas (Argenti
 - No Registration: No need to sign up or connect to your Google account.
 - Statistics: Provides insights into the most frequent report categories and the number of recent reports to identify recurring issues.
 
+### UI
+![reports6](https://github.com/user-attachments/assets/051dd3fb-21b7-4d29-b578-fa55ed220220)
+![reports7](https://github.com/user-attachments/assets/e483482b-faef-4afa-9987-adbca69dfadc)
+![reports1](https://github.com/user-attachments/assets/ddb22e9c-5664-45f1-8fd7-bbbb6a094480)
+![reports4](https://github.com/user-attachments/assets/287dbc12-3944-4bd8-83b9-be7d9b410d6c)
+![reports2](https://github.com/user-attachments/assets/bd8f2c46-afb5-4edf-aa40-bf3c8390f8e6)
+![reports3](https://github.com/user-attachments/assets/3812cefc-205c-4bf2-bb08-e71d399c9790)
+
 ### Technology Stack
 - Go 
 - Gin
