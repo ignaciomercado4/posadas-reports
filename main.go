@@ -3,6 +3,7 @@ package main
 import (
 	"better-posadas/database"
 	"better-posadas/handlers"
+	"fmt"
 	"html/template"
 	"log"
 	"os"
@@ -21,8 +22,11 @@ func main() {
 		}
 	}
 
-	r := gin.Default()
+	if os.Getenv("RAILWAY_ENVIRONMENT") != "" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
+	r := gin.Default()
 	r.Use(cors.Default())
 
 	db := database.ConnectDatabase()
@@ -37,7 +41,14 @@ func main() {
 
 	r.StaticFile("/reportsUi.js", "./public/reportsUi.js")
 	r.StaticFile("/mapSearchBar.js", "./public/mapSearchBar.js")
-	r.LoadHTMLGlob("templates/*")
+
+	currentDir, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("Failed to get current directory: %v", err)
+	}
+	templateDir := fmt.Sprintf("%s/templates/*", currentDir)
+	log.Println("Templates directory:", templateDir)
+	r.LoadHTMLGlob(templateDir)
 
 	r.GET("/", reportHandler.GetHome)
 	r.GET("/reports", reportHandler.GetReports)
@@ -49,7 +60,6 @@ func main() {
 	if PORT == "" {
 		PORT = "8080"
 	}
-
 	log.Println("Server is running on port " + PORT)
 	r.Run(":" + PORT)
 }
