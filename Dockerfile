@@ -34,8 +34,5 @@ COPY --from=builder /app/main .
 # Exponemos el puerto en el que escucha Gin (por defecto 8080)
 EXPOSE 8080
 
-RUN ls -R /app
-
-
 # Comando para ejecutar la aplicación
 CMD ["./main"]
