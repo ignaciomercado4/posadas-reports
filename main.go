@@ -37,7 +37,7 @@ func main() {
 
 	r.StaticFile("/reportsUi.js", "./public/reportsUi.js")
 	r.StaticFile("/mapSearchBar.js", "./public/mapSearchBar.js")
-	r.LoadHTMLGlob("./templates/*")
+	r.LoadHTMLGlob("./templates/*") // fix
 
 	r.GET("/", reportHandler.GetHome)
 	r.GET("/reports", reportHandler.GetReports)
