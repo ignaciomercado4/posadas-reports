@@ -12,9 +12,11 @@ import (
 )
 
 func ConnectDatabase() *gorm.DB {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Println("No .env file found, using system environment variables")
+		}
 	}
 
 	DB_HOST := os.Getenv("DB_HOST")
@@ -23,19 +25,22 @@ func ConnectDatabase() *gorm.DB {
 	DB_NAME := os.Getenv("DB_NAME")
 	DB_PORT := os.Getenv("DB_PORT")
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Argentina/Buenos_Aires",
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require TimeZone=America/Argentina/Buenos_Aires",
 		DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("failed to connect database")
+		log.Fatalf("Failed to connect to the database: %v", err)
 	}
 
-	fmt.Println("successful database connection")
+	fmt.Println("Successful database connection")
 	return db
 }
 
 func MigrateModels(db *gorm.DB) {
-	db.AutoMigrate(&models.Report{})
-	fmt.Println("models migrated")
+	err := db.AutoMigrate(&models.Report{})
+	if err != nil {
+		log.Fatalf("Failed to migrate models: %v", err)
+	}
+	fmt.Println("Models migrated successfully")
 }
