@@ -26,10 +26,14 @@ FROM alpine:latest
 RUN apk --no-cache add postgresql-client
 
 # Creamos un directorio para la app
-WORKDIR /root/
+WORKDIR /app
 
 # Copiamos el binario de la fase de construcción
 COPY --from=builder /app/main .
+
+# Copiamos las carpetas templates y public
+COPY --from=builder /app/templates ./templates
+COPY --from=builder /app/public ./public
 
 # Exponemos el puerto en el que escucha Gin (por defecto 8080)
 EXPOSE 8080
