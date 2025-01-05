@@ -39,5 +39,8 @@ To get started with the app:
 - High: The issue presents a significant risk to public safety or property. There is a real potential for serious injury to individuals or damage to both private and public property. Delaying action could result in more severe consequences or widespread impact.
 - Critical: The situation is currently causing harm to individuals or extensive damage to property. Immediate intervention is necessary to prevent further injury, loss of life, or irreversible damage. This is an emergency-level concern requiring urgent resolution to safeguard the well-being of the community.
 
+### Credits
+Favicon from [here](https://icon-icons.com/es/download/107531/ICO/512/).
+
 ### License
 This project is licensed under the MIT License - see the LICENSE file for details.
